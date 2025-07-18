@@ -1,6 +1,6 @@
 # Módulo: banco.py (responsável por interação com o banco de dados)
 
-import mariadb
+import psycopg2
 
 DB_CONFIG = {
     'host': '10.0.270.18',
@@ -10,7 +10,7 @@ DB_CONFIG = {
 }
 
 def conectar():
-    return mariadb.connect(**DB_CONFIG)
+    return psycopg2.connect(**DB_CONFIG)
 
 def buscar_pesquisas(filtro):
     con = conectar()
