@@ -47,8 +47,11 @@ class SPVAutomatico:
             time.sleep(60)
 
         if filtro < max(FILTROS_VALIDOS):
-            SPVAutomatico(filtro + 1).executar()
+            i = filtro + 1
+            print(f'RECOMENÇANDO COM O FILTRO {i}')
+            SPVAutomatico(i).executar()
         else:
+            print('RECOMEÇANDO')
             navegador.restartar_programa()
  
 if __name__ == "__main__":

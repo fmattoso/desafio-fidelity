@@ -82,6 +82,7 @@ ALTER SEQUENCE servico_cod_servico_seq RESTART WITH 1;
 INSERT INTO servico (civel, criminal) VALUES ('Cível', 'Criminal');
 
 INSERT INTO pesquisa (cod_servico, cod_uf, nome) VALUES 
+    (1, 26, 'Pessoa Sem Processos'),  
     (1, 26, 'Murilo Vieira Miranda'), 
     (1, 26, 'Billy Douglas Cardoso dos Santos'), 
     (1, 26, 'Érika Letícia Guedes Terto'), 
