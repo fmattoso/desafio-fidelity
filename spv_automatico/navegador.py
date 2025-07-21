@@ -3,18 +3,20 @@
 import time
 import os
 import platform
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.edge.options import Options as EdgeOptions
+from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import NoSuchElementException
 
 # Detecta o sistema operacional
 sistema = platform.system().lower()
 
-EXECUTAVEL = 'C:/Users/teste/OneDrive/Documentos/'
+# EXECUTAVEL = 'C:/Users/teste/OneDrive/Documentos/'
 
 NADA_CONSTA = 'Não existem informações disponíveis para os parâmetros informados.'
 CONSTA01 = 'Processos encontrados'
@@ -27,12 +29,14 @@ def iniciar_navegador():
         edge_driver_path = os.path.expanduser("~/Documents/msedgedriver.exe")
         options = EdgeOptions()
         options.add_argument("--headless")
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
         service = EdgeService(executable_path=edge_driver_path)
         driver = webdriver.Edge(service=service, options=options)
     else:
         chrome_driver_path = "/usr/bin/chromedriver"  # Presume que esteja no PATH
         options = ChromeOptions()
         options.add_argument("--headless")
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
         service = ChromeService(executable_path=chrome_driver_path)
         driver = webdriver.Chrome(service=service, options=options)
 
@@ -58,6 +62,7 @@ def carregar_site(filtro, documento):
         return browser.page_source
 
     except Exception as e:
+        print(f"Erro ao carregar o site: {e}")
         time.sleep(120)
         restartar_programa()
 

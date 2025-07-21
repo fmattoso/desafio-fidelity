@@ -3,10 +3,11 @@
 import psycopg2
 
 DB_CONFIG = {
-    'host': '10.0.270.18',
-    'user': 'usr_teste',
-    'password': 'teste',
-    'database': 'db_teste'
+    'host': '191.252.191.49',
+    'user': 'fidelity',
+    'password': 'fidelity123',
+    'database': 'db_fidelity',
+    'port': '5432'
 }
 
 def conectar():
@@ -32,9 +33,11 @@ def buscar_pesquisas(filtro):
          LEFT JOIN estado e ON e.Cod_UF = p.Cod_UF
          LEFT JOIN pesquisa_spv ps ON ps.Cod_Pesquisa = p.Cod_Pesquisa AND ps.Cod_SPV = 1 AND ps.filtro = {filtro}
     WHERE p.Data_Conclusao IS NULL AND ps.resultado IS NULL AND p.tipo = 0
-          AND p.cpf <> "" {cond}
-          AND (e.UF = "SP" OR p.Cod_UF_Nascimento = 26 OR p.Cod_UF_RG = 26)
-    GROUP BY p.cod_pesquisa
+          AND (({filtro} = 0 AND coalesce(p.cpf, '') <> '') 
+           OR  ({filtro} IN (1,3) AND coalesce(p.RG, '') <> '')
+           OR  ({filtro} = 2 AND coalesce(p.nome_corrigido, p.nome, '') <> ''))
+          AND (e.UF = 'SP' OR p.Cod_UF_Nascimento = 26 OR p.Cod_UF_RG = 26)
+    -- GROUP BY p.cod_pesquisa
     ORDER BY nome ASC, resultado DESC
     LIMIT 210
     '''
@@ -52,6 +55,15 @@ def salvar_resultado(codPesquisa, resultado, filtro):
     ) VALUES (
         {codPesquisa}, 1, 36, NULL, {resultado}, -1, {filtro}, 1
     )
+    ON CONFLICT (cod_pesquisa) 
+    DO UPDATE SET
+        Cod_SPV = EXCLUDED.Cod_SPV,
+        Cod_spv_computador = EXCLUDED.Cod_spv_computador,
+        Cod_spv_tipo = EXCLUDED.Cod_spv_tipo,
+        Resultado = EXCLUDED.Resultado,
+        Cod_Funcionario = EXCLUDED.Cod_Funcionario,
+        filtro = EXCLUDED.filtro,
+        website_id = EXCLUDED.website_id
     '''
     con = conectar()
     cursor = con.cursor()

@@ -1,5 +1,5 @@
 # ===================== main.py =====================
-# Lógica principal do sistema
+# Lógica principal do programa
 
 import datetime
 import time
@@ -42,15 +42,15 @@ class SPVAutomatico:
                 if (datetime.datetime.now() - tempo_inicio).total_seconds() > 600:
                     break
 
-            if filtro < max(FILTROS_VALIDOS):
-                SPVAutomatico(filtro + 1).executar()
-            else:
-                navegador.restartar_programa()
         else:
-            print("Nenhuma pesquisa encontrada. Aguardando...")
+            print(f"Nenhuma pesquisa encontrada para o filtro {filtro}. Aguardando...")
             time.sleep(60)
-            navegador.restartar_programa()
 
+        if filtro < max(FILTROS_VALIDOS):
+            SPVAutomatico(filtro + 1).executar()
+        else:
+            navegador.restartar_programa()
+ 
 if __name__ == "__main__":
     spv = SPVAutomatico(0)
     spv.executar()
